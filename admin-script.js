@@ -1,166 +1,73 @@
-// Dados simulados (no Django seria vindo do banco)
-let publicacoes = [
-    {
-        id: 'P001',
-        titulo: 'Portaria Nº 123/2026 - Regulamentação de Procedimentos',
-        autor: 'João Silva',
-        email: 'joao@example.com',
-        status: 'rascunho',
-        data: '2026-10-25',
-        historico: [
-            { acao: 'Criada', data: '2026-10-25 14:30', usuario: 'João Silva' },
-        ]
-    },
-    {
-        id: 'P002',
-        titulo: 'Decreto Nº 456/2026 - Alterações Orçamentárias',
-        autor: 'Maria Santos',
-        email: 'maria@example.com',
-        status: 'pronto',
-        data: '2026-10-24',
-        historico: [
-            { acao: 'Enviada para aprovação', data: '2026-10-24 10:00', usuario: 'Maria Santos' },
-            { acao: 'Criada', data: '2026-10-24 09:15', usuario: 'Maria Santos' },
-        ]
-    },
-    {
-        id: 'P003',
-        titulo: 'Edital Nº 789/2026 - Processo Seletivo',
-        autor: 'Carlos Oliveira',
-        email: 'carlos@example.com',
-        status: 'publicada',
-        data: '2026-10-23',
-        historico: [
-            { acao: 'Publicada', data: '2026-10-23 16:45', usuario: 'Admin' },
-            { acao: 'Aprovada', data: '2026-10-23 15:30', usuario: 'Admin' },
-        ]
-    },
-];
+// Estado
+let publicacao = {
+    id: 'P001',
+    titulo: 'PORTARIA Nº 022/2026',
+    autor: 'João Silva',
+    email: 'joao@example.com',
+    status: 'edicao',
+    dataPub: '2026-10-27',
+    tipo: 'Atos Administrativos',
+    statusAnterior: null
+};
 
 const PREFIXO_REJEICAO = '(PUBLICAÇÃO REJEITADA, SÓ É PERMITIDO ANEXOS DE DOCUMENTOS FISCAIS) ';
-let publicacaoEmEdicao = null;
 
 // Elements
-const publicationsTable = document.getElementById('publicationsTable');
-const editModal = document.getElementById('editModal');
+const form = document.getElementById('publicacaoForm');
+const statusRadios = document.querySelectorAll('input[name="status"]');
 const confirmModal = document.getElementById('confirmModal');
 const successModal = document.getElementById('successModal');
-const filterSearch = document.getElementById('filterSearch');
-const filterStatus = document.getElementById('filterStatus');
+const titleInput = document.getElementById('titulo');
+
+// Status labels
+const STATUS_LABELS = {
+    'edicao': 'Editando',
+    'pronta': 'Pronta p/ publicação',
+    'publicada': 'Publicada',
+    'nao_aprovada': 'Não Aprovada (Rejeitada)',
+    'arquivada': 'Arquivada',
+    'moderacao': 'Moderação (aguardando aprovação)'
+};
 
 // Event Listeners
-filterSearch.addEventListener('input', renderPublicacoes);
-filterStatus.addEventListener('change', renderPublicacoes);
-document.getElementById('selectAll').addEventListener('change', toggleSelectAll);
+statusRadios.forEach(radio => {
+    radio.addEventListener('change', handleStatusChange);
+});
 
-// Render initial data
-renderPublicacoes();
-
-function renderPublicacoes() {
-    const search = filterSearch.value.toLowerCase();
-    const statusFilter = filterStatus.value;
-
-    // Filtra publicações
-    const filtered = publicacoes.filter(pub => {
-        const matchSearch = pub.titulo.toLowerCase().includes(search) ||
-                           pub.autor.toLowerCase().includes(search);
-        const matchStatus = !statusFilter || pub.status === statusFilter;
-        return matchSearch && matchStatus;
+// Collapsar fieldsets
+document.querySelectorAll('.legend').forEach(legend => {
+    legend.addEventListener('click', function() {
+        const fieldset = this.closest('.fieldset');
+        fieldset.classList.toggle('collapsed');
+        this.classList.toggle('collapsed');
     });
-
-    // Limpa tabela
-    publicationsTable.innerHTML = '';
-
-    // Renderiza linhas
-    filtered.forEach(pub => {
-        const row = document.createElement('tr');
-        const statusClass = `status-${pub.status}`;
-        const statusLabel = {
-            'rascunho': 'Rascunho',
-            'pronto': 'Pronto para Publicação',
-            'publicada': 'Publicada',
-            'rejeitada': 'Rejeitada'
-        }[pub.status];
-
-        row.innerHTML = `
-            <td style="text-align: center;">
-                <input type="checkbox" class="select-checkbox" value="${pub.id}">
-            </td>
-            <td>
-                <a href="#" onclick="openEditModal('${pub.id}'); return false;" style="color: #667eea; text-decoration: none; cursor: pointer;">
-                    ${pub.titulo.substring(0, 50)}${pub.titulo.length > 50 ? '...' : ''}
-                </a>
-            </td>
-            <td>${pub.autor}</td>
-            <td>
-                <span class="status-badge ${statusClass}">${statusLabel}</span>
-            </td>
-            <td>${new Date(pub.data).toLocaleDateString('pt-BR')}</td>
-            <td style="text-align: center;">
-                <div class="action-buttons">
-                    <button class="btn-edit" onclick="openEditModal('${pub.id}'); return false;">✏️</button>
-                    ${pub.status !== 'rejeitada' ? `<button class="btn-delete" onclick="openConfirmModal('${pub.id}'); return false;">✕</button>` : ''}
-                </div>
-            </td>
-        `;
-
-        publicationsTable.appendChild(row);
-    });
-}
-
-function openEditModal(id) {
-    publicacaoEmEdicao = publicacoes.find(p => p.id === id);
-
-    if (!publicacaoEmEdicao) return;
-
-    // Preenche campos
-    document.getElementById('editId').value = publicacaoEmEdicao.id;
-    document.getElementById('editTitulo').value = publicacaoEmEdicao.titulo;
-    document.getElementById('editAutor').value = publicacaoEmEdicao.autor;
-    document.getElementById('editEmail').value = publicacaoEmEdicao.email;
-    document.getElementById('editStatus').value = publicacaoEmEdicao.status;
-
-    // Renderiza histórico
-    const historyLog = document.getElementById('historyLog');
-    const historySection = document.getElementById('historySection');
-    historyLog.innerHTML = publicacaoEmEdicao.historico
-        .map(h => `<div class="history-item">
-            <strong>${h.acao}</strong> - ${h.data} por ${h.usuario}
-        </div>`)
-        .join('');
-    historySection.style.display = 'block';
-
-    // Mostra modal
-    editModal.classList.add('show');
-}
-
-function closeEditModal() {
-    editModal.classList.remove('show');
-    publicacaoEmEdicao = null;
-}
+});
 
 function handleStatusChange(e) {
     const novoStatus = e.target.value;
 
-    if (novoStatus === 'rejeitada' && publicacaoEmEdicao.status !== 'rejeitada') {
-        // Abre modal de confirmação
-        closeEditModal();
-        document.getElementById('confirmTitle').textContent = publicacaoEmEdicao.titulo;
-        confirmModal.classList.add('show');
-    }
-}
+    // Se está mudando PARA "não_aprovada", pede confirmação
+    if (novoStatus === 'nao_aprovada' && publicacao.status !== 'nao_aprovada') {
+        // Desmarca o radio para não mudar ainda
+        statusRadios.forEach(r => {
+            r.checked = r.value === publicacao.status;
+        });
 
-function openConfirmModal(id) {
-    const pub = publicacoes.find(p => p.id === id);
-    if (pub) {
-        publicacaoEmEdicao = pub;
-        document.getElementById('confirmTitle').textContent = pub.titulo;
+        // Abre modal de confirmação
+        document.getElementById('confirmTitle').textContent = titleInput.value;
+        confirmModal.classList.remove('hidden');
         confirmModal.classList.add('show');
+    } else {
+        // Para outros status, só muda direto
+        publicacao.statusAnterior = publicacao.status;
+        publicacao.status = novoStatus;
+        console.log(`✅ Status alterado para: ${STATUS_LABELS[novoStatus]}`);
     }
 }
 
 function closeConfirmModal() {
     confirmModal.classList.remove('show');
+    confirmModal.classList.add('hidden');
 }
 
 function confirmarRejeicao() {
@@ -168,76 +75,76 @@ function confirmarRejeicao() {
     rejetarPublicacao();
 }
 
-async function rejetarPublicacao() {
-    if (!publicacaoEmEdicao) return;
-
-    const pub = publicacaoEmEdicao;
-
+function rejetarPublicacao() {
     // Altera o título (se ainda não tiver o prefixo)
-    if (!pub.titulo.startsWith(PREFIXO_REJEICAO)) {
-        const tituloOriginal = pub.titulo;
-        pub.titulo = PREFIXO_REJEICAO + tituloOriginal;
+    const tituloOriginal = publicacao.titulo;
+
+    if (!publicacao.titulo.startsWith(PREFIXO_REJEICAO)) {
+        publicacao.titulo = PREFIXO_REJEICAO + tituloOriginal;
+        titleInput.value = publicacao.titulo;
     }
 
-    // Altera o status
-    pub.status = 'rejeitada';
+    // Muda status
+    publicacao.statusAnterior = publicacao.status;
+    publicacao.status = 'nao_aprovada';
 
-    // Adiciona ao histórico
-    const agora = new Date();
-    const dataHora = agora.toLocaleString('pt-BR');
-    pub.historico.unshift({
-        acao: 'Rejeitada via Admin',
-        data: dataHora,
-        usuario: 'Admin'
+    // Marca o radio correto
+    statusRadios.forEach(r => {
+        r.checked = r.value === 'nao_aprovada';
     });
 
     // Simula envio de e-mail
-    console.log('📧 Enviando e-mail para:', pub.email);
-    console.log('Assunto: Publicação Rejeitada');
-    console.log('Corpo: Sua publicação foi rejeitada. Título original:',
-        pub.titulo.replace(PREFIXO_REJEICAO, ''));
+    console.log('📧 ENVIANDO E-MAIL:');
+    console.log(`Para: ${publicacao.email}`);
+    console.log(`Assunto: Publicação Rejeitada`);
+    console.log(`Corpo: Sua publicação "${tituloOriginal}" foi rejeitada.`);
+    console.log(`Motivo: SÓ É PERMITIDO ANEXOS DE DOCUMENTOS FISCAIS`);
 
-    // Renderiza tabela novamente
-    renderPublicacoes();
-
-    // Mostra sucesso
-    document.getElementById('successContent').innerHTML = `
-        <p><strong>${pub.titulo.replace(PREFIXO_REJEICAO, '')}</strong></p>
+    // Mostra modal de sucesso
+    document.getElementById('successMessage').innerHTML = `
+        <p><strong>${tituloOriginal}</strong></p>
         <p>✅ Publicação rejeitada com sucesso!</p>
-        <p>📧 E-mail enviado para: <strong>${pub.email}</strong></p>
+        <p>📧 E-mail enviado para: <strong>${publicacao.email}</strong></p>
+        <p style="font-size: 0.9em; color: #666; margin-top: 15px;">
+            O título foi alterado e o status foi atualizado para "Não Aprovada (Rejeitada)"
+        </p>
     `;
+
+    successModal.classList.remove('hidden');
     successModal.classList.add('show');
 }
 
 function closeSuccessModal() {
     successModal.classList.remove('show');
-    closeEditModal();
+    successModal.classList.add('hidden');
 }
 
 function salvarPublicacao() {
-    if (!publicacaoEmEdicao) return;
+    // Salva os dados
+    publicacao.titulo = titleInput.value;
+    publicacao.dataPub = document.getElementById('dataPub').value;
+    publicacao.tipo = document.getElementById('tipo').value;
 
-    // Atualiza dados
-    publicacaoEmEdicao.titulo = document.getElementById('editTitulo').value;
-    publicacaoEmEdicao.email = document.getElementById('editEmail').value;
+    // Mostra mensagem de sucesso
+    document.getElementById('successMessage').innerHTML = `
+        <p><strong>${publicacao.titulo}</strong></p>
+        <p>✅ Publicação salva com sucesso!</p>
+        <p>Status: <strong>${STATUS_LABELS[publicacao.status]}</strong></p>
+    `;
 
-    // Renderiza tabela
-    renderPublicacoes();
+    successModal.classList.remove('hidden');
+    successModal.classList.add('show');
 
-    // Feedback
-    alert('✅ Publicação salva com sucesso!');
+    console.log('💾 Publicação salva:', publicacao);
 }
 
-function toggleSelectAll(e) {
-    const checkboxes = document.querySelectorAll('.select-checkbox');
-    checkboxes.forEach(cb => cb.checked = e.target.checked);
+function closeSuccessModal() {
+    successModal.classList.remove('show');
+    successModal.classList.add('hidden');
 }
 
-// Fecha modais ao clicar fora
+// Fecha modal ao clicar fora
 window.onclick = function(event) {
-    if (event.target === editModal) {
-        closeEditModal();
-    }
     if (event.target === confirmModal) {
         closeConfirmModal();
     }
@@ -245,3 +152,7 @@ window.onclick = function(event) {
         closeSuccessModal();
     }
 }
+
+// Log inicial
+console.log('✅ Painel de Publicações carregado');
+console.log('Publicação atual:', publicacao);

@@ -7,183 +7,196 @@
     <link rel="stylesheet" href="admin-style.css">
 </head>
 <body>
-    <div class="admin-container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="logo">
-                <h2>📋 AMM</h2>
-                <p>Painel Admin</p>
+    <div class="admin-wrapper">
+        <!-- Header Dark -->
+        <header class="admin-header-dark">
+            <div class="header-content">
+                <h1>AMM - Painel de Administração</h1>
+                <div class="header-links">
+                    <span>BEM-VINDO(A) ADMIN</span>
+                    <a href="#">VER O SITE</a>
+                    <a href="#">ALTERAR SENHA</a>
+                    <a href="#">ENCERRAR SESSÃO</a>
+                </div>
             </div>
+        </header>
 
-            <nav class="nav-menu">
-                <div class="nav-section">
-                    <p class="section-title">CORE</p>
-                    <a href="#" class="nav-item active">
-                        <span>🏠</span> Dashboard
-                    </a>
-                </div>
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb-nav">
+            <span>Início</span>
+            <span>›</span>
+            <span>Publisher</span>
+            <span>›</span>
+            <span>Publicações</span>
+            <span>›</span>
+            <span>PORTARIA Nº 022/2026</span>
+        </nav>
 
-                <div class="nav-section">
-                    <p class="section-title">PUBLISHER</p>
-                    <a href="#" class="nav-item active">
-                        <span>📰</span> Publicações
-                    </a>
-                    <a href="#" class="nav-item">
-                        <span>📑</span> Edições
-                    </a>
-                </div>
-
-                <div class="nav-section">
-                    <p class="section-title">USUÁRIOS</p>
-                    <a href="#" class="nav-item">
-                        <span>👥</span> Usuários
-                    </a>
-                </div>
-            </nav>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Header -->
-            <header class="admin-header">
-                <div class="header-top">
-                    <h1>Publicações</h1>
-                    <div class="user-menu">
-                        <span>👤 Admin</span>
-                        <button class="btn-small">Alterar Senha</button>
-                        <button class="btn-small">Sair</button>
+        <div class="container">
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Form Header -->
+                <div class="form-header">
+                    <h2>Modificar Publicação</h2>
+                    <div class="button-group">
+                        <button class="btn btn-history">HISTÓRICO</button>
+                        <button class="btn btn-preview">PREVIEW 26/10/2026 16:09</button>
                     </div>
                 </div>
-                <div class="breadcrumb">
-                    Início › Publicações
+
+                <!-- Form -->
+                <form id="publicacaoForm" class="publication-form">
+                    <!-- Seção: Controle -->
+                    <fieldset class="fieldset">
+                        <legend class="legend">
+                            <span class="legend-toggle">▶</span>
+                            Controle
+                        </legend>
+
+                        <div class="fieldset-content">
+                            <!-- Estilo da publicação -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Estilo da publicação (Largura):</label>
+                                    <div class="radio-group">
+                                        <label class="radio-label">
+                                            <input type="radio" name="estilo" value="pagina_intera" checked>
+                                            Página Inteira
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="estilo" value="meia_pagina">
+                                            Meia Página
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Datas de publicação:</label>
+                                    <div class="date-time-group">
+                                        <input type="date" id="dataPub" value="2026-10-27" class="date-input">
+                                        <span class="date-format">dd/mm/aaaa</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Publicado pela primeira vez:</label>
+                                    <div class="date-section">
+                                        <span class="date-label">Data:</span>
+                                        <span class="date-value">Hoje</span>
+                                        <span class="calendar-icon">📅</span>
+                                    </div>
+                                    <div class="time-section">
+                                        <span class="time-label">Hora:</span>
+                                        <input type="time" id="horaPub" class="time-input" placeholder="Agora">
+                                        <span class="clock-icon">⏰</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Status -->
+                            <div class="form-group full-width">
+                                <label>Status:</label>
+                                <div class="status-group">
+                                    <label class="radio-label">
+                                        <input type="radio" name="status" value="edicao" checked>
+                                        Editando
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="status" value="pronta">
+                                        Pronta p/ publicação
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="status" value="publicada">
+                                        Publicada
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="status" value="nao_aprovada">
+                                        Não Aprovada (Rejeitada)
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="status" value="arquivada">
+                                        Arquivada
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="status" value="moderacao">
+                                        Moderação (aguardando aprovação)
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Autor -->
+                            <div class="form-group full-width">
+                                <label>Autor:</label>
+                                <div class="author-field">
+                                    <input type="text" id="nomeAutor" value="João Silva / joao@example.com" readonly class="author-input">
+                                    <button type="button" class="btn-icon">✏️</button>
+                                    <button type="button" class="btn-icon">➕</button>
+                                    <button type="button" class="btn-icon">👁️</button>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Seção: Conteúdo obrigatório -->
+                    <fieldset class="fieldset">
+                        <legend class="legend">
+                            <span class="legend-toggle">▶</span>
+                            Conteúdo obrigatório
+                        </legend>
+
+                        <div class="fieldset-content">
+                            <!-- Título -->
+                            <div class="form-group full-width">
+                                <label>Título:</label>
+                                <input type="text" id="titulo" value="PORTARIA Nº 022/2026" class="form-control full-width">
+                            </div>
+
+                            <!-- Tipo de publicação -->
+                            <div class="form-group full-width">
+                                <label>Tipo de publicação:</label>
+                                <select id="tipo" class="form-control">
+                                    <option>Atos Administrativos</option>
+                                    <option>Licitações</option>
+                                    <option>Editais</option>
+                                </select>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Botões de Ação -->
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-save" onclick="salvarPublicacao()">Salvar e continuar editando</button>
+                        <button type="button" class="btn btn-close">Fechar</button>
+                    </div>
+                </form>
+
+                <!-- Confirmation Modal -->
+                <div id="confirmModal" class="modal hidden">
+                    <div class="modal-content">
+                        <h2>Confirmar Rejeição</h2>
+                        <p>Você tem certeza que deseja rejeitar esta publicação?</p>
+                        <p id="confirmTitle"></p>
+                        <p style="font-size: 0.9em; color: #666; margin-top: 15px;">
+                            Um e-mail será enviado para o autor informando a rejeição.
+                        </p>
+                        <div class="modal-actions">
+                            <button class="btn btn-secondary" onclick="closeConfirmModal()">Cancelar</button>
+                            <button class="btn btn-danger" onclick="confirmarRejeicao()">Sim, Rejeitar</button>
+                        </div>
+                    </div>
                 </div>
-            </header>
 
-            <!-- Content Area -->
-            <div class="content-area">
-                <!-- Filter Bar -->
-                <div class="filter-bar">
-                    <input type="text" id="filterSearch" placeholder="Buscar por título ou autor..." class="search-input">
-                    <select id="filterStatus" class="filter-select">
-                        <option value="">Todos os Status</option>
-                        <option value="rascunho">Rascunho</option>
-                        <option value="pronto">Pronto</option>
-                        <option value="publicada">Publicada</option>
-                        <option value="rejeitada">Rejeitada</option>
-                    </select>
-                    <button class="btn-primary">+ Adicionar Publicação</button>
+                <!-- Success Modal -->
+                <div id="successModal" class="modal hidden">
+                    <div class="modal-content">
+                        <h2>✅ Operação Concluída</h2>
+                        <p id="successMessage"></p>
+                        <div class="modal-actions">
+                            <button class="btn btn-primary" onclick="closeSuccessModal()">Ok</button>
+                        </div>
+                    </div>
                 </div>
-
-                <!-- Publications List -->
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 40px;">
-                                <input type="checkbox" id="selectAll">
-                            </th>
-                            <th>Título</th>
-                            <th>Autor</th>
-                            <th>Status</th>
-                            <th>Data</th>
-                            <th style="width: 100px;">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="publicationsTable">
-                        <!-- Populated by JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-        </main>
-    </div>
-
-    <!-- Edit Modal -->
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Editar Publicação</h2>
-                <button class="close-btn" onclick="closeEditModal()">&times;</button>
-            </div>
-
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>ID / Referência:</label>
-                    <input type="text" id="editId" readonly class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label>Título:</label>
-                    <input type="text" id="editTitulo" class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label>Autor:</label>
-                    <input type="text" id="editAutor" readonly class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label>E-mail do Autor:</label>
-                    <input type="email" id="editEmail" class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label>Status:</label>
-                    <select id="editStatus" class="form-control" onchange="handleStatusChange(event)">
-                        <option value="rascunho">Rascunho</option>
-                        <option value="pronto">Pronto para Publicação</option>
-                        <option value="publicada">Publicada</option>
-                        <option value="rejeitada">Não Aprovada (Rejeitada)</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Motivo da Rejeição:</label>
-                    <textarea id="editMotivo" class="form-control" readonly>(PUBLICAÇÃO REJEITADA, SÓ É PERMITIDO ANEXOS DE DOCUMENTOS FISCAIS)</textarea>
-                </div>
-
-                <div id="historySection" style="margin-top: 30px; display: none;">
-                    <h3>📝 Histórico de Alterações</h3>
-                    <div id="historyLog" class="history-log"></div>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeEditModal()">Cancelar</button>
-                <button id="btnSalvar" class="btn btn-success" onclick="salvarPublicacao()">Salvar e Continuar Editando</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Confirmation Modal -->
-    <div id="confirmModal" class="modal">
-        <div class="modal-content modal-small">
-            <div class="modal-header">
-                <h2>Confirmar Rejeição</h2>
-            </div>
-            <div class="modal-body">
-                <p>Você tem certeza que deseja rejeitar esta publicação?</p>
-                <p><strong id="confirmTitle"></strong></p>
-                <p style="font-size: 0.9em; color: #666;">Um e-mail será enviado para o autor informando a rejeição.</p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeConfirmModal()">Cancelar</button>
-                <button class="btn btn-danger" onclick="confirmarRejeicao()">Sim, Rejeitar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Success Modal -->
-    <div id="successModal" class="modal">
-        <div class="modal-content modal-small">
-            <div class="modal-header">
-                <h2>✅ Operação Concluída</h2>
-            </div>
-            <div class="modal-body" id="successContent">
-                <p>Publicação rejeitada com sucesso!</p>
-                <p>E-mail enviado para o autor.</p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" onclick="closeSuccessModal()">Ok</button>
-            </div>
+            </main>
         </div>
     </div>
 
