@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rejeitar Publicação - Demo</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Sistema de Rejeição de Publicações</h1>
+            <p>Teste prototipado - GitHub Pages</p>
+        </header>
+
+        <main>
+            <section class="publication-card">
+                <div class="card-header">
+                    <h2>Publicação #001</h2>
+                    <span class="status status-rascunho">Rascunho</span>
+                </div>
+
+                <div class="card-body">
+                    <div class="field">
+                        <label>Título:</label>
+                        <input
+                            type="text"
+                            id="titulo"
+                            value="Portaria Nº 123/2026 - Regulamentação de Procedimentos"
+                            readonly
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label>Autor:</label>
+                        <input type="text" value="João Silva (joao@example.com)" readonly>
+                    </div>
+
+                    <div class="field">
+                        <label>Status:</label>
+                        <select id="status">
+                            <option value="rascunho">Rascunho</option>
+                            <option value="pronto">Pronto para Publicação</option>
+                            <option value="rejeitado">Não Aprovada (Rejeitada)</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>Seu E-mail (para teste):</label>
+                        <input
+                            type="email"
+                            id="email_test"
+                            value="aportacoding@gmail.com"
+                            placeholder="seu@email.com"
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label>Motivo da Rejeição:</label>
+                        <textarea id="motivo" readonly>(PUBLICAÇÃO REJEITADA, SÓ É PERMITIDO ANEXOS DE DOCUMENTOS FISCAIS)</textarea>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <button id="btnRejeitar" class="btn btn-reject">
+                        ✕ Rejeitar Publicação
+                    </button>
+                    <button id="btnReset" class="btn btn-reset">
+                        ↻ Resetar
+                    </button>
+                </div>
+            </section>
+
+            <section class="info-panel">
+                <h3>📋 O que acontecerá ao rejeitar:</h3>
+                <ul>
+                    <li>✅ Título será alterado com prefixo de rejeição</li>
+                    <li>✅ Status mudará para "Não Aprovada (Rejeitada)"</li>
+                    <li>✅ Um e-mail será enviado para o endereço informado</li>
+                    <li>✅ Histórico será registrado</li>
+                </ul>
+            </section>
+
+            <section class="status-log">
+                <h3>📝 Log de Ações:</h3>
+                <div id="log" class="log-content">
+                    <p class="log-item info">Sistema pronto. Clique em "Rejeitar Publicação" para testar.</p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>🔐 Este é apenas um protótipo de demonstração. EmailJS é usado para enviar e-mails de forma segura.</p>
+            <p>GitHub Pages | Django Demo | Rejeição Automática</p>
+        </footer>
+    </div>
+
+    <!-- Loading Modal -->
+    <div id="loadingModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="spinner"></div>
+            <p>Enviando e-mail...</p>
+        </div>
+    </div>
+
+    <!-- Status Modal -->
+    <div id="statusModal" class="modal hidden">
+        <div class="modal-content">
+            <div id="statusContent"></div>
+            <button onclick="closeModal()" class="btn btn-primary">Fechar</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
